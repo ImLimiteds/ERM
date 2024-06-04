@@ -330,6 +330,9 @@ class ERLC(commands.Cog):
                     value=value,
                     inline=False
                 )
+
+        if len(embed2.fields) == 0:
+            embed2.description = "> There are no online staff members."
         await ctx.send(embed=embed2)
 
     @server.command(
@@ -550,29 +553,38 @@ class ERLC(commands.Cog):
             f"**Server Staff [{len(staff)}]**\n" + 
             ', '.join([f'[{plr.username} ({plr.team})](https://roblox.com/users/{plr.id}/profile)' for plr in staff])
         )
-        if list(embed2.description).index(']') > len(embed2.description) + 5:
-            embed2.description += "No players."
         
         
         embed2.description += (
             f"\n\n**Online Players [{len(actual_players)}]**\n" +
             ', '.join([f'[{plr.username} ({plr.team})](https://roblox.com/users/{plr.id}/profile)' for plr in actual_players])
         )
-        if list(embed2.description).index(']') > len(embed2.description) + 5:
-            embed2.description += "No players."
-
-
+        
         embed2.description += (
             f"\n\n**Queue [{len(queue)}]**\n" +
             ', '.join([f'[{plr.username}](https://roblox.com/users/{plr.id}/profile)' for plr in queue])
         )
-        if list(embed2.description).index(']') > len(embed2.description) + 5:
-            embed2.description += "No players."
 
         embed2.set_author(
             name=ctx.guild.name,
             icon_url=ctx.guild.icon.url
         )
+        if len(embed2.description) > 3999:
+            embed2.description = ""
+            embed2.description += (
+                f"**Server Staff [{len(staff)}]**\n" + 
+                ', '.join([f'{plr.username} ({plr.team})' for plr in staff])
+            )
+        
+            embed2.description += (
+                f"\n\n**Online Players [{len(actual_players)}]**\n" +
+                ', '.join([f'{plr.username} ({plr.team})' for plr in actual_players])
+            )
+
+            embed2.description += (
+                f"\n\n**Queue [{len(queue)}]**\n" +
+                ', '.join([f'{plr.username}' for plr in queue])
+            )
 
         await ctx.send(embed=embed2)
 
@@ -594,7 +606,7 @@ class ERLC(commands.Cog):
                     matched[item] = x
 
         embed2 = discord.Embed(
-            title=f"Server Vehicles [{len(players)}]",
+            title=f"Server Vehicles [{len(vehicles)}/{len(players)}]",
             color=BLANK_COLOR,
             description=""
         )
@@ -611,12 +623,9 @@ class ERLC(commands.Cog):
             f"**Active Vehicles [{len(vehicles)}]**\n> " +
             '\n> '.join([f'[{plr.username}](https://roblox.com/users/{plr.id}/profile) - {veh.vehicle} **({veh.texture})**' for veh, plr in matched.items()])
         )
-        if list(embed2.description).index(']') > len(embed2.description) + 5:
-            embed2.description += "No players."
 
-
-        if list(embed2.description).index(']') > len(embed2.description) + 5:
-            embed2.description += "No players."
+        if len(vehicles) == 0:
+            embed2.description = "> There are no active vehicles in your server."
 
         embed2.set_author(
             name=ctx.guild.name,
